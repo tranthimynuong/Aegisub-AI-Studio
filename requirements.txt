@@ -1,0 +1,8 @@
+faster-whisper
+av==14.2.0
+nvidia-cublas-cu12
+nvidia-cudnn-cu12
+transformers>=5.6.0
+torch
+accelerate
+tqdm

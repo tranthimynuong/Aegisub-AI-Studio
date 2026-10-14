@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Subber Studio | Biên Tập & Dịch Phụ Đề Tự Động</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Header -->
+    <header class="studio-header">
+      <div class="logo-area">
+        <div class="logo-icon">🎬</div>
+        <div class="logo-text">
+          <h1>Subber Studio <span class="ai-badge">AI Powered</span></h1>
+          <p class="tagline">Whisper • Hy-MT2-1.8B • FFmpeg Hardsub</p>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="video-select-group">
+          <label for="videoSelect">Chọn video:</label>
+          <select id="videoSelect">
+            <option value="">-- Đang quét thư mục Downloads... --</option>
+          </select>
+          <button id="btnRefreshVideos" class="icon-btn" title="Quét lại thư mục">🔄</button>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnSaveSubs" class="btn btn-secondary">💾 Lưu Phụ Đề</button>
+        <button id="btnExportVideo" class="btn btn-primary glowing">🚀 Xuất Video Hoàn Chỉnh</button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="studio-main">
+      <!-- Left: Player & Styling -->
+      <section class="left-panel">
+        <div class="player-wrapper">
+          <div class="video-container" id="videoContainer">
+            <video id="mainVideo" preload="metadata"></video>
+            
+            <!-- Live Subtitle Overlay -->
+            <div id="subOverlay" class="sub-overlay">
+              <span id="subOverlayText">Xem trước phụ đề sẽ hiển thị ở đây</span>
+            </div>
+
+            <!-- Logo Blur Box Preview -->
+            <div id="logoBlurBox" class="logo-blur-box">
+              <span class="blur-label">VÙNG LÀM MỜ LOGO</span>
+            </div>
+          </div>
+
+          <!-- Video Control Bar -->
+          <div class="video-controls">
+            <button id="btnPlayPause" class="ctrl-btn play-btn">▶</button>
+            <button id="btnBack5" class="ctrl-btn" title="Lùi 5s">⏪ 5s</button>
+            <button id="btnFwd5" class="ctrl-btn" title="Tới 5s">5s ⏩</button>
+            <div class="time-display">
+              <span id="curTime">00:00:00</span> / <span id="durTime">00:00:00</span>
+            </div>
+            <div class="speed-control">
+              <span>Tốc độ:</span>
+              <button class="speed-btn active" data-speed="1">1x</button>
+              <button class="speed-btn" data-speed="1.25">1.25x</button>
+              <button class="speed-btn" data-speed="1.5">1.5x</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customization Settings Card -->
+        <div class="settings-card">
+          <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="tabSubStyle">🎨 Kiểu Chữ Phụ Đề</button>
+            <button class="tab-btn" data-tab="tabBlur">🛡️ Xóa Mờ Logo</button>
+          </div>
+
+          <!-- Tab 1: Subtitle Style -->
+          <div class="tab-content active" id="tabSubStyle">
+            <div class="setting-grid">
+              <div class="setting-item">
+                <label>Font chữ:</label>
+                <select id="settingFont">
+                  <option value="Arial" selected>Arial (Mặc định)</option>
+                  <option value="Segoe UI">Segoe UI</option>
+                  <option value="Tahoma">Tahoma</option>
+                  <option value="Verdana">Verdana</option>
+                </select>
+              </div>
+
+              <div class="setting-item">
+                <label>Kích cỡ chữ (<span id="valFontSize">48</span>px):</label>
+                <input type="range" id="settingFontSize" min="24" max="72" value="48">
+              </div>
+
+              <div class="setting-item">
+                <label>Màu chữ:</label>
+                <div class="color-presets">
+                  <button class="color-chip active" data-color="&H00FFFFFF" style="background: #ffffff;" title="Trắng"></button>
+                  <button class="color-chip" data-color="&H0000E6FF" style="background: #FFE600;" title="Vàng nổi bật"></button>
+                  <button class="color-chip" data-color="&H0000FFFF" style="background: #00FFFF;" title="Xanh lơ"></button>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <label>Độ dày viền đen (<span id="valOutline">3</span>px):</label>
+                <input type="range" id="settingOutline" min="1" max="8" step="0.5" value="3">
+              </div>
+
+              <div class="setting-item full-width">
+                <label>Khoảng cách mép dưới - Né sub Trung (<span id="valMarginV">55</span>px):</label>
+                <input type="range" id="settingMarginV" min="10" max="150" value="55">
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Logo Blur Settings -->
+          <div class="tab-content" id="tabBlur">
+            <div class="blur-toggle-row">
+              <label class="switch">
+                <input type="checkbox" id="chkBlurLogo" checked>
+                <span class="slider round"></span>
+              </label>
+              <span class="switch-label">Bật làm mờ logo góc trái (Frosted Glass Blur)</span>
+            </div>
+            <div class="setting-grid blur-inputs" id="blurInputsArea">
+              <div class="setting-item">
+                <label>Tọa độ X:</label>
+                <input type="number" id="blurX" value="15">
+              </div>
+              <div class="setting-item">
+                <label>Tọa độ Y:</label>
+                <input type="number" id="blurY" value="15">
+              </div>
+              <div class="setting-item">
+                <label>Chiều rộng (W):</label>
+                <input type="number" id="blurW" value="245">
+              </div>
+              <div class="setting-item">
+                <label>Chiều cao (H):</label>
+                <input type="number" id="blurH" value="70">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Subtitles Editor -->
+      <section class="right-panel">
+        <div class="sub-header-bar">
+          <div class="sub-counter">
+            <span class="counter-badge" id="subCount">0 câu thoại</span>
+          </div>
+          <div class="sub-filter-box">
+            <input type="text" id="subSearchInput" placeholder="🔍 Tìm kiếm câu thoại...">
+          </div>
+          <button id="btnAddSub" class="btn btn-sm btn-outline">+ Thêm câu</button>
+        </div>
+
+        <div class="sub-list-container" id="subListContainer">
+          <div class="empty-state" id="emptyState">
+            <div class="empty-icon">📝</div>
+            <h3>Chưa có dữ liệu phụ đề</h3>
+            <p>Chọn một video phía trên để tự động nạp hoặc bắt đầu biên tập.</p>
+          </div>
+          <!-- Subtitle rows injected here -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Progress / Modal Overlay -->
+  <div class="modal-overlay" id="taskModal">
+    <div class="modal-card">
+      <div class="modal-icon" id="modalIcon">⚙️</div>
+      <h3 id="modalTitle">Đang xuất video...</h3>
+      <p id="modalDesc">Vui lòng đợi giây lát, FFmpeg đang tổng hợp video chất lượng cao.</p>
+      
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="modalProgressBar"></div>
+      </div>
+
+      <div class="modal-actions" id="modalActions" style="display: none;">
+        <button id="btnOpenFolder" class="btn btn-primary">📁 Mở thư mục chứa Video</button>
+        <button id="btnCloseModal" class="btn btn-secondary">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

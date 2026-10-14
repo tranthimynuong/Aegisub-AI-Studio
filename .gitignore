@@ -1,0 +1,67 @@
+# Secrets & Credentials
+ai_api_config.json
+.env
+*.pem
+*.key
+
+# Python Bytecode & Environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Temporary & Runtime Automation Files
+temp_ai_lines.txt
+temp_render.ass
+task_*.json
+*.log
+kdenlive_*.log
+temp/
+tmp/
+scratch/
+
+# Video & Audio Assets / Outputs
+*.mp4
+*.mkv
+*.avi
+*.mov
+*.flv
+*.wmv
+*.wav
+*.mp3
+*.aac
+*.m4a
+output/
+exports/
+
+# Aegisub Temp & Backups
+*.bak
+*.autosave
+
+# IDE & OS Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
